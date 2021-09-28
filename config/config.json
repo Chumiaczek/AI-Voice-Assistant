@@ -3,15 +3,10 @@
     {
         "tag": "greeting",
         "utterances": [
-<<<<<<< HEAD
             "wake up mike",
             "hello mike",
             "hi mike",
             "hey mike"
-=======
-            "wake up jarvis",
-            "hello jarvis"
->>>>>>> c6204314904f81e3e5fb3b3539939904c7871159
         ],
         "response": [
             "Hello Sir, How may i help you?",
