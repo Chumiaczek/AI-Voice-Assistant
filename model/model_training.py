@@ -55,14 +55,14 @@ class TrainingModel:
             optimizer=adam,
             metrics=["accuracy"])
 
-        model.fit(x=train_x, y=train_y, epochs=500, verbose=0)
+        model.fit(x=train_x, y=train_y, epochs=200, verbose=0)
 
         return model
     
     def get_intent(self, model, command):
         bow = self.bag_of_words(command, self.words)
         result = model.predict(np.array([bow]))[0]
-        thresh = 0.5
+        thresh = 0.2
 
         y_pred = [[idx, res] for idx, res in enumerate(result) if res > thresh]
         y_pred.sort(key=lambda x: x[1], reverse=True)
