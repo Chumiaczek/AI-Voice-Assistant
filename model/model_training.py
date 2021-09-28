@@ -95,4 +95,4 @@ class TrainingModel:
         list_of_intents = data['intents']
         for intent in list_of_intents:
             if intent['tag'] == tag:
-                response = random.choice(intent['response'])
+                return random.choice(intent['response'])
