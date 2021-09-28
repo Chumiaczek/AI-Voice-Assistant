@@ -19,19 +19,19 @@ class TrainingModel:
         self.lemmatizer = WordNetLemmatizer()
 
     def train(self):
-        words = [lemmatizer.lemmatize(word.lower()) for word in words if word not in string.punctuation]
+        words = [self.lemmatizer.lemmatize(word.lower()) for word in self.words if word not in string.punctuation]
         training = []
-        out_empty = [0]* len(classes)
+        out_empty = [0]* len(self.classes)
 
-        for idx, doc in enumerate(data_x):
+        for idx, doc in enumerate(self.data_x):
             bow = []
-            text = lemmatizer.lemmatize(doc.lower())
+            text = self.lemmatizer.lemmatize(doc.lower())
 
         for word in words:
             bow.append(1) if word in text else bow.append(0)
 
         output_row = list(out_empty)
-        output_row[classes.index(data_y[idx])] = 1
+        output_row[self.classes.index(self.data_y[idx])] = 1
 
         training.append([bow, output_row])
 
@@ -59,13 +59,22 @@ class TrainingModel:
 
         return model
     
-    def clean_text(text):
-        tokens = nltk.word_tokenize(text)
-        tokens = [lemmatizer.lemmatize(word.lower()) for word in tokens]
-        return tokens
+    def get_intent(self, model, command):
+        bow = self.bag_of_words(command, self.words)
+        result = model.predict(np.array([bow]))[0]
+        thresh = 0.5
 
-    def bag_of_words(command, words):
-        tokens = clean_text(command)
+        y_pred = [[idx, res] for idx, res in enumerate(result) if res > thresh]
+        y_pred.sort(key=lambda x: x[1], reverse=True)
+
+        intents =[]
+
+        for pred in y_pred:
+            intents.append(self.classes[pred[0]])
+        return intents
+
+    def bag_of_words(self, command, words):
+        tokens = self.clean_text(command)
         bow = [0]* len(words)
 
         for token in tokens:
@@ -75,19 +84,10 @@ class TrainingModel:
 
         return np.array(bow)
 
-    def get_intent(command, words, classes):
-        bow = bag_of_words(command, words)
-        result = model.predict(np.array([bow]))[0]
-        thresh = 0.5
-
-        y_pred = [[idx, res] for idx, res in enumerate(result) if res > thresh]
-        y_pred.sort(key=lambda x: x[1], reverse=True)
-
-        return_list =[]
-
-        for pred in y_pred:
-            return_list.append(classes[pred[0]])
-        return return_list
+    def clean_text(self, text):
+        tokens = nltk.word_tokenize(text)
+        tokens = [self.lemmatizer.lemmatize(word.lower()) for word in tokens]
+        return tokens
 
     @staticmethod
     def get_response(intents, data):
