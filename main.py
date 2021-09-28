@@ -1,5 +1,25 @@
 import model
 from model.model_training import TrainingModel
+import speech_recognition as sr
+
+def read_voice_cmd(self):
+    voice_input = ''
+    try:
+        with sr.Microphone() as source:
+            print("Listening...")
+            audio = self.speech.listen(source=source, timeout=5, phrase_time_limit=5)
+        voice_input = self.speech.recognize_google(audio)
+        self.logger.info('Input: {}'.format(voice_input))
+    except sr.UnknownValueError:
+        pass
+    except sr.RequestError:
+        print("Check your connection with Internet and try again.")
+    except sr.WaitTimeoutError:
+        pass
+    except TimeoutError:
+        pass
+
+    return voice_input.lower()
 
 if __name__ == '__main__':
     words = model.words

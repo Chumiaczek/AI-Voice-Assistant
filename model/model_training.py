@@ -51,9 +51,7 @@ class TrainingModel:
         model.add(Dropout(0.3))
         model.add(Dense(output_shape, activation="softmax"))
         adam = tf.keras.optimizers.Adam(learning_rate=0.01, decay=1e-6)
-        model.compile(loss='categorical_crossentropy',
-                      optimizer=adam,
-                      metrics=["accuracy"])
+        model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=["accuracy"])
 
         model.fit(x=train_x, y=train_y, epochs=200, verbose=1)
 
